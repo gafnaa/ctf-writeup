@@ -13,8 +13,8 @@ AAAE6AMAAFBLBQYAAAAAAQABAFwAAAA6AQAAAAA=
 
 decoded_bytes = base64.b64decode(encoded_data)
 
-with open("extracted.zip", "wb") as f:
+with open("part1.zip", "wb") as f:
     f.write(decoded_bytes)
 
-print("File ZIP berhasil diekstrak: extracted.zip")
+print("File ZIP berhasil diekstrak: part1.zip")
 
