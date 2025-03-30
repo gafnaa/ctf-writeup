@@ -1,24 +1,31 @@
-from pwn import *
+import nclib
+import time
 
-r = remote('94.237.62.240', 45066)
+def createResponse(message):
+    message = message.split()
+    challenge = []
+    for item in message:
+        if 'GORGE' in item or 'PHREAK' in item or 'FIRE' in item: 
+            challenge.append(item)
+    challenge = ' '.join(challenge)
+    answer = challenge.replace('GORGE', 'STOP').replace('PHREAK', 'DROP').replace('FIRE', 'ROLL').replace(', ','-')
+    answer = answer + '\n'
+    print(answer)
+    return answer
 
-r.recvuntil(b'(y/n) ')
-
-r.sendline(b'y')
-
-r.recvuntil(b'\n')
-
-tries = 0
-
-while True:
-    try:
-        got = r.recvline().decode()
-        payload = got.replace(", ", "-").replace("GORGE", "STOP").replace("PHREAK", "DROP").replace("FIRE", "ROLL").strip()
-
-        r.sendlineafter(b'What do you do?', payload.encode())
-        tries = tries + 1
-        log.info(f'{tries}: {payload}')
-    except EOFError:
-        log.success(got.strip())
-        r.close()
-        break
+def main():
+    server = ('94.237.63.32', 55143)
+    nc = nclib.Netcat(connect=server)
+    nc.settimeout(None)
+    intro = nc.recv_until("Are you ready? (y/n)").decode()
+    print(intro)
+    nc.send('y\n'.encode())
+    while True:
+        message = nc.recv_until("What do you do?").decode()
+        print(message)
+        answer = createResponse(message)
+        time.sleep(2)
+        nc.send(answer.encode())
+    
+if __name__ == '__main__':
+    main()
