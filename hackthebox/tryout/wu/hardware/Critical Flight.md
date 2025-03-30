@@ -9,7 +9,7 @@ View those using https://www.pcbway.com/project/OnlineGerberViewer.html
 
 Archive those files in .zip and upload it
 
-![gerber1](/assets/gerber1_fyylg2dnm.PNG)
+![gerber1](/hackthebox/tryout/assets/gerber1_fyylg2dnm.PNG)
 
 Try to unview some layers to see clearly for each part. Then, I found part of the flag by only view "copper" in "bottom"
 
