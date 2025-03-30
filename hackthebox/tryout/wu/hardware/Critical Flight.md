@@ -9,15 +9,15 @@ View those using https://www.pcbway.com/project/OnlineGerberViewer.html
 
 Archive those files in .zip and upload it
 
-![gerber1](/assets/gerber1_ky0mebzi7.PNG)
+![gerber1](/assets/gerber1.PNG)
 
 Try to unview some layers to see clearly for each part. Then, I found part of the flag by only view "copper" in "bottom"
-![gerber2](/assets/gerber2_rd2z42iv4.PNG)
+![gerber2](/assets/gerber2.PNG)
 
 Do same thing as before, to find the other part of the flag.
 Then, I found last part of flag by only view "copper" in "inner"
 
-![gerber3](/assets/gerber3_mqyaazsr7.PNG)
+![gerber3](/assets/gerber3.PNG)
 
 Then, merge it and submit the flag
 
