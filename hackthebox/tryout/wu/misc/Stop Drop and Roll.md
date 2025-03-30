@@ -3,7 +3,7 @@ The Fray: The Video Game is one of the greatest hits of the last... well, we don
 
 ## Solution
 
-try to connect to server..
+try connecting to server..
 
 ```sh
 $ nc 83.136.252.198 54862
