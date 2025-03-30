@@ -1,8 +1,9 @@
 import nclib
 import numpy as np
+import time
 
 def min_path_sum(grid, rows, cols):
-    """Menggunakan DP untuk mencari minimum path sum dalam grid."""
+    """Menggunakan Dynamic Programming untuk mencari jalur minimum dalam grid."""
     dp = np.zeros((rows, cols), dtype=int)
 
     # Inisialisasi nilai awal
@@ -25,33 +26,95 @@ def min_path_sum(grid, rows, cols):
 
 def main():
     server = ('94.237.62.255', 30978)
-    nc = nclib.Netcat(connect=server)
-    nc.settimeout(None)
+    
+    while True:  # Coba reconnect jika perlu
+        try:
+            print("\n[+] Connecting to server...")
+            nc = nclib.Netcat(connect=server)
+            nc.settimeout(10)  # Timeout 10 detik untuk menghindari hang
+            
+            while True:
+                # Terima data awal
+                try:
+                    message = nc.recv_until(b'>', timeout=10).decode().strip()
+                except Exception as e:
+                    print(f"[!] Timeout/Error: {e}. Reconnecting...")
+                    break  # Keluar dari loop dan coba reconnect
 
-    while True:
-        # Terima data dari server
-        message = nc.recv().decode().strip()
-        print("Received:", message)
+                if not message:
+                    print("[!] Empty message received. Skipping...")
+                    continue
 
-        # Filter hanya baris yang berisi angka, hindari baris kosong
-        numeric_lines = [line for line in message.split("\n") if line and line[0].isdigit()]
+                print("[+] Received:", message)
 
-        if len(numeric_lines) < 2:
-            continue  # Tunggu sampai input yang valid diterima
+                # Jika menemukan flag "HTB{", hentikan program
+                if "HTB{" in message:
+                    print("[🎉] Flag ditemukan! Program berhenti.")
+                    exit()
 
-        # Ambil ukuran grid
-        rows, cols = map(int, numeric_lines[0].split())
+                # Pisahkan semua baris
+                lines = message.split("\n")
 
-        # Ambil angka dalam grid
-        numbers = list(map(int, " ".join(numeric_lines[1:]).split()))
-        grid = [numbers[i * cols:(i + 1) * cols] for i in range(rows)]
+                # Ambil hanya yang mengandung angka
+                numeric_lines = [line for line in lines if line.replace(" ", "").isdigit()]
 
-        # Hitung minimum path sum
-        result = min_path_sum(grid, rows, cols)
-        print(f"Sending: {result}")
+                if len(numeric_lines) < 2:
+                    print("[!] Data tidak cukup, menunggu tambahan...")
+                    continue  # Tunggu sampai format data benar
 
-        # Kirim hasil ke server
-        nc.send(f"{result}\n".encode())
+                # Ambil ukuran grid
+                try:
+                    rows, cols = map(int, numeric_lines[0].split())
+                except ValueError:
+                    print("[!] Format ukuran grid salah. Skip...")
+                    continue
+
+                expected_numbers = rows * cols
+
+                # Ambil angka grid
+                numbers = list(map(int, " ".join(numeric_lines[1:]).split()))
+
+                # Jika masih kurang, terima tambahan data
+                while len(numbers) < expected_numbers:
+                    try:
+                        additional_data = nc.recv(timeout=5).decode().strip()
+                    except Exception:
+                        print("[!] Timeout saat menerima tambahan data. Reconnecting...")
+                        break  # Keluar dari loop untuk reconnect
+
+                    if not additional_data:
+                        print("[!] Empty additional data. Skipping...")
+                        continue
+
+                    print("[+] Received additional data:", additional_data)
+
+                    # Jika flag ditemukan saat menerima tambahan data, hentikan program
+                    if "HTB{" in additional_data:
+                        print("[🎉] Flag ditemukan! Program berhenti.")
+                        exit()
+
+                    numbers.extend(map(int, additional_data.split()))
+
+                # Jika masih kurang, berarti ada masalah dalam penerimaan data
+                if len(numbers) != expected_numbers:
+                    print(f"[!] Error: Expected {expected_numbers} numbers but got {len(numbers)}. Skipping...")
+                    continue
+
+                # Bentuk grid
+                grid = [numbers[i * cols:(i + 1) * cols] for i in range(rows)]
+
+                # Hitung minimum path sum
+                result = min_path_sum(grid, rows, cols)
+                print(f"[+] Sending: {result}")
+
+                # Kirim hasil ke server
+                nc.send(f"{result}\n".encode())
+
+                time.sleep(1)  # Hindari spam terlalu cepat
+
+        except Exception as e:
+            print(f"[!] Connection error: {e}. Retrying in 5 seconds...")
+            time.sleep(5)  # Tunggu sebelum mencoba kembali
 
 if __name__ == '__main__':
     main()
