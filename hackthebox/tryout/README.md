@@ -2,6 +2,8 @@
 
 ## Team : mas renan tolong yg smngat yh
 
+Rank: 116th
+
 **Participant:**
 
 * [s4nkya](https://github.com/gafnaa)
