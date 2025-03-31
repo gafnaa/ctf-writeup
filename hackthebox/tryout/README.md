@@ -25,3 +25,8 @@
 | Labyrinth Linguist  | 950    | easy         | Web Explo | s4nkya      |
 | Phreaky             | 975    | Medium       | Forensic  | s4nkya      |
 | An unusual sighting | 925    | very easy    | Forensic  | RGX         |
+| Character           | 925    | very easy    | Misc      | RGX         |
+| Stop Drop and Roll  | 950    | very easy    | Misc      | s4nkya      |
+| Locked Away         | 1000   | easy         | Misc      | s4nkya      |
+| Dynastic            | 925    | very easy    | Crypto    | s4nkya      |
+| Dynamic Paths       | 1000   | easy         | Coding    | s4nkya      |
