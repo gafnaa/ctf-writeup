@@ -16,5 +16,6 @@ $ex.waitFor()
 %23foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end
 ```
 
+
 ## Flag
     HTB{f13ry_t3mpl4t35_fr0m_th3_d3pth5!!_9b6fc18d8d7f15b2c818a8f7db514e08}
