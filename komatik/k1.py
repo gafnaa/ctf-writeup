@@ -1,33 +1,63 @@
+from pwn import *
 import random
-import os
 
-bits = 1024
-k = random.randint(20, 35)
-password = random.getrandbits(bits) % 1000000
+SRVR = "ctf.asgama.online"
+PORT = 10000
 
-def get_shares():
-    coeffs = [password] + [random.getrandbits(bits) for _ in range(k - 1)]
-    x_list = set()
-    while len(x_list) < k - 1:
-        x_list.add(random.getrandbits(bits))
+def lagrange_interpolate(x, y, point=0):
+    """
+    Interpolates the polynomial coefficients and evaluates at `point`.
+    Returns P(point), where P is the polynomial defined by (x, y) points.
+    """
+    total = 0
+    n = len(x)
+    for i in range(n):
+        numerator, denominator = 1, 1
+        for j in range(n):
+            if i == j:
+                continue
+            numerator *= (point - x[j])
+            denominator *= (x[i] - x[j])
+        total += y[i] * numerator // denominator
+    return total
+
+def main():
+    r = remote(SRVR, PORT)
     
+    # Get k
+    k_line = r.recvline().decode().strip()
+    assert k_line.startswith('k = ')
+    k = int(k_line.split('=')[1].strip())
+    print(f"[+] Got k = {k}")
+
+    # Read (x, y) shares
     shares = []
-    for x in x_list:
-        y = sum(map(lambda i : coeffs[i] * pow(x, i), range(len(coeffs))))
-        shares.append((x, y))
+    for _ in range(k - 1):
+        line = r.recvline().decode().strip()
+        if line.startswith('(') and line.endswith(')'):
+            x, y = map(int, line[1:-1].split(', '))
+            shares.append((x, y))
+        else:
+            print(f"[ERROR] Unexpected line: {line}")
+            r.close()
+            return
     
-    print(f'{k = }')
-    for share in shares:
-        print(share)
+    print(f"[+] Collected {len(shares)} shares")
+    
+    # Extract x and y lists
+    x_list, y_list = zip(*shares)
+    
+    # Recover the password (coeff0) using Lagrange interpolation at x=0
+    password = lagrange_interpolate(x_list, y_list) % 1000000
+    print(f"[+] Recovered password: {password}")
+    
+    # Send the password
+    r.sendlineafter(b'password: ', str(password).encode())
+    
+    # Get the flag
+    flag = r.recvline().decode().strip()
+    print(f"[+] Flag: {flag}")
+    r.close()
 
-def get_flag():
-    res = int(input('password: '))
-    if password == res:
-        os.system('cat flag.txt')
-        print()
-
-try:
-    get_shares()
-    get_flag()        
-except:
-    print('something error happened.')
+if __name__ == "__main__":
+    main()

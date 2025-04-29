@@ -1,10 +1,10 @@
 from pwn import *
 from Crypto.Util.number import bytes_to_long, long_to_bytes
 
-SRVR = "ctf.asgama.online"  
-PORT = 10002  
+server = "ctf.asgama.online"  
+port = 10002  
 
-r = remote(SRVR, PORT)
+r = remote(server, port)
 def encrypt(pt):
     r.sendlineafter(b"> ", b"1")
     r.sendlineafter(b"plaintext = ", str(pt).encode())
