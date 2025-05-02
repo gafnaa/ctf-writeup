@@ -9,15 +9,15 @@ Credit: picoCTF 2017
 open file that given (`data.pcap`) using wireshark.
 search filter =  `tcp`
 
-![dig](/assets/dig.PNG)
+![dig](ctflearn/assets/dig.PNG)
 
 then select one data then follow tcp stream
 
-![dig2](/assets/dig2.PNG)
+![dig2](ctflearn/assets/dig2.PNG)
 
 We can alter streams by changing the counter in bottom right corner. As I reached 3rd stream, I observed some credentials there.
 
-![dig3](/assets/dig3.PNG)
+![dig3](ctflearn/assets/dig3.PNG)
 
 `Credentials: userid=hardawayn&pswrd=UEFwZHNqUlRhZQ%3D%3D`
 
