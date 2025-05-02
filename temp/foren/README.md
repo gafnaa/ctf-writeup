@@ -1,4 +1,5 @@
 # Writeup
+This made of because I am so bored.
 
 ## PicoCTF - Forensic
 by sankya
