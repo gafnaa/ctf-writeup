@@ -36,7 +36,17 @@ app.post('/server_status', async (req, res) => {
     }
 ```
 
+There is a hidden character in the line `const {choice, } = req.body:` This same symbol also appears in the `command` list, which indicates which commands we are allowed to run on the server.
 
+We can pass a *some-command* value to that character variable, and it will end up in the list of allowed commands.
+
+In my Burp Repeater, I tried several requests with different values, and after some trials, I got this response:
+
+![hidep](/hackthebox/tryout/assets/hidep.PNG)
+
+We can pass another parameter with name of `ㅤ`, value of our new command, and execute it with choice=6. RCE is officially found! Now it's just a matter of exposing the flag
+
+![hide](/hackthebox/tryout/assets/hide.PNG)
 
 ## Flag
     HTB{1nvi5IBl3_cH4r4cT3rS_n0t_sO_v1SIbL3_d562b60ae1f777d5da6d87fd5f789af4}
